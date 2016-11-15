@@ -1,12 +1,16 @@
+package commands;
+
 import java.util.UUID;
 
-public class DeactivateInventoryItem {
+public class CheckInItemsToInventory {
 
     public final UUID inventoryItemId;
+    public final int count;
     public final int originalVersion;
 
-    public DeactivateInventoryItem(UUID inventoryItemId, int originalVersion) {
+    public CheckInItemsToInventory(UUID inventoryItemId, int count, int originalVersion) {
         this.inventoryItemId = inventoryItemId;
+        this.count = count;
         this.originalVersion = originalVersion;
     }
 }
