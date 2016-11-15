@@ -2,11 +2,9 @@ package events;
 
 import java.util.UUID;
 
-public class InventoryItemDeactivated {
-
-    public final UUID id;
+public class InventoryItemDeactivated extends Event {
 
     public InventoryItemDeactivated(UUID id) {
-        this.id = id;
+        super(id);
     }
 }

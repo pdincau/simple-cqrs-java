@@ -2,13 +2,12 @@ package events;
 
 import java.util.UUID;
 
-public class InventoryItemCreated {
+public class InventoryItemCreated extends Event {
 
-    public final UUID id;
     public final String name;
 
     public InventoryItemCreated(UUID id, String name) {
-        this.id = id;
+        super(id);
         this.name = name;
     }
 }

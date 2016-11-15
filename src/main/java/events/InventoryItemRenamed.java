@@ -2,13 +2,12 @@ package events;
 
 import java.util.UUID;
 
-public class InventoryItemRenamed {
+public class InventoryItemRenamed extends Event {
 
-    public final UUID id;
     public final String newName;
 
     public InventoryItemRenamed(UUID id, String newName) {
-        this.id = id;
+        super(id);
         this.newName = newName;
     }
 }

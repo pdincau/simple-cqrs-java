@@ -2,13 +2,12 @@ package events;
 
 import java.util.UUID;
 
-public class ItemsRemovedFromInventory {
-
-    public final UUID id;
+public class ItemsRemovedFromInventory extends Event {
+    
     public final int count;
 
     public ItemsRemovedFromInventory(UUID id, int count) {
-        this.id = id;
+        super(id);
         this.count = count;
     }
 }
