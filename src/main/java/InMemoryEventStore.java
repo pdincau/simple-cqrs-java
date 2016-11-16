@@ -16,6 +16,24 @@ public class InMemoryEventStore implements EventStore {
 
     @Override
     public void saveEvents(UUID aggregateId, List<Event> events, int expectedVersion) {
+        List<EventDescriptor> eventDescriptors = current.get(aggregateId);
+
+        if (eventDescriptors == null) {
+            current.put(aggregateId, new ArrayList<>());
+        } else if(eventDescriptors.get(eventDescriptors.size() - 1).version != expectedVersion && expectedVersion != -1) {
+            throw new ConcurrencyException();
+        }
+
+        int i = expectedVersion;
+
+        for (Event event : events) {
+            // TODO: do we really need EventDescriptor.version ?
+            i++;
+            event.version = i;
+            eventDescriptors.add(new EventDescriptor(event, aggregateId, i));
+
+            publisher.publish(event);
+        }
 
     }
 
