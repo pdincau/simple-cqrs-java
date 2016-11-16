@@ -4,12 +4,12 @@ import java.util.UUID;
 
 public class EventDescriptor {
 
-    public final Event eventData;
+    public final Event event;
     public final UUID id;
     public final int version;
 
-    public EventDescriptor(Event eventData, UUID id, int version) {
-        this.eventData = eventData;
+    public EventDescriptor(Event event, UUID id, int version) {
+        this.event = event;
         this.id = id;
         this.version = version;
     }
