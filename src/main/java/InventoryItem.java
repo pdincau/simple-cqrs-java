@@ -1,4 +1,5 @@
 import events.*;
+import org.apache.commons.lang3.StringUtils;
 
 import java.util.UUID;
 
@@ -39,6 +40,13 @@ public class InventoryItem extends AggregateRoot {
             throw new InvalidOperationException("must have a count greater than 0 to add to inventory");
         }
         applyChange(new ItemsCheckedInToInventory(id, count));
+    }
+
+    public void ChangeName(String newName) {
+        if (StringUtils.isBlank(newName)) {
+            throw new ArgumentException("newName");
+        }
+        applyChange(new InventoryItemRenamed(id, newName));
     }
 
     @Override
