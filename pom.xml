@@ -21,9 +21,9 @@
     </build>
     <dependencies>
         <dependency>
-            <groupId>it.paros.mif2015</groupId>
-            <artifactId>Caronte-core</artifactId>
-            <version>0.0.2-SNAPSHOT</version>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-lang3</artifactId>
+            <version>3.0</version>
         </dependency>
     </dependencies>
 
