@@ -19,11 +19,12 @@ public abstract class AggregateRoot {
     public void setVersion(int version) {
         this.version = version;
     }
+
     public List<Event> getUncommittedChanges() {
         return changes;
     }
 
-    public void MarkChangesAsCommitted() {
+    public void markChangesAsCommitted() {
         changes.clear();
     }
 
