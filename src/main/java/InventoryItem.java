@@ -7,6 +7,10 @@ public class InventoryItem extends AggregateRoot {
     private Boolean activated;
     private UUID id;
 
+    public InventoryItem() {
+
+    }
+
     @Override
     public UUID getId() {
         return id;
