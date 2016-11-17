@@ -35,14 +35,14 @@ public class InventoryItem extends AggregateRoot {
         applyChange(new ItemsRemovedFromInventory(id, count));
     }
 
-    public void CheckIn(int count) {
+    public void checkIn(int count) {
         if (count <= 0) {
             throw new InvalidOperationException("must have a count greater than 0 to add to inventory");
         }
         applyChange(new ItemsCheckedInToInventory(id, count));
     }
 
-    public void ChangeName(String newName) {
+    public void changeName(String newName) {
         if (StringUtils.isBlank(newName)) {
             throw new ArgumentException("newName");
         }
