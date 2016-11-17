@@ -34,6 +34,10 @@ public abstract class AggregateRoot {
         }
     }
 
+    protected void applyChange(Event event) {
+        applyChange(event, true);
+    }
+
     private void applyChange(Event event, Boolean isNew) {
         apply(event);
         if (isNew) {
