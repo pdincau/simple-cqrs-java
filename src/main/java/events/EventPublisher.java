@@ -1,6 +1,6 @@
 package events;
 
-public interface EventPublisher<T extends Event> {
+public interface EventPublisher {
 
-    void publish(T event);
+    void publish(Event event);
 }
