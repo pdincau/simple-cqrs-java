@@ -1,6 +1,6 @@
 package commands;
 
-public interface CommandSender<T extends Command> {
+public interface CommandSender {
 
-    void send(T command);
+    void send(Command command);
 }
