@@ -1,3 +1,8 @@
+package infrastructure;
+
+import domain.AggregateRootRepository;
+import events.EventStore;
+import domain.InventoryItem;
 import events.Event;
 
 import java.util.List;

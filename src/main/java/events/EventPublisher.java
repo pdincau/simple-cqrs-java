@@ -1,4 +1,4 @@
-import events.Event;
+package events;
 
 public interface EventPublisher<T extends Event> {
 

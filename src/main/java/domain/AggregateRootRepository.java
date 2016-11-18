@@ -1,3 +1,5 @@
+package domain;
+
 import java.util.UUID;
 
 public interface AggregateRootRepository<T extends AggregateRoot> {

@@ -1,3 +1,5 @@
+package domain;
+
 import events.Event;
 
 import java.util.ArrayList;

@@ -1,4 +1,8 @@
+package domain;
+
 import events.*;
+import exceptions.ArgumentException;
+import exceptions.InvalidOperationException;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.UUID;
