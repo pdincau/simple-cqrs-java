@@ -1,5 +1,6 @@
-package commands;
+package commands.handlers;
 
+import commands.*;
 import domain.AggregateRootRepository;
 import domain.InventoryItem;
 import com.google.common.eventbus.Subscribe;

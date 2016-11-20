@@ -3,7 +3,7 @@ package domain;
 import com.google.common.eventbus.AsyncEventBus;
 import commands.Command;
 import commands.CommandSender;
-import commands.InventoryCommandHandlers;
+import commands.handlers.InventoryCommandHandlers;
 
 import java.util.concurrent.ExecutorService;
 
