@@ -1,6 +1,6 @@
 package events;
 
-public interface DomainEventPublisher {
+public interface EventPublisher {
 
     void publish(Event event);
 }

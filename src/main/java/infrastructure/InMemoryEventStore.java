@@ -2,7 +2,7 @@ package infrastructure;
 
 import events.Event;
 import events.EventDescriptor;
-import events.DomainEventPublisher;
+import events.EventPublisher;
 import events.EventStore;
 import exceptions.AggregateNotFoundException;
 import exceptions.ConcurrencyException;
@@ -13,11 +13,11 @@ import static java.util.stream.Collectors.toList;
 
 public class InMemoryEventStore implements EventStore {
 
-    private final DomainEventPublisher publisher;
+    private final EventPublisher publisher;
 
     private final Map<UUID, List<EventDescriptor>> current = new HashMap<>();
 
-    public InMemoryEventStore(DomainEventPublisher publisher) {
+    public InMemoryEventStore(EventPublisher publisher) {
         this.publisher = publisher;
     }
 
