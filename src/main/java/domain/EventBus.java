@@ -14,7 +14,7 @@ public class EventBus implements EventPublisher {
     private final AsyncEventBus bus;
 
     public EventBus() {
-        bus = new AsyncEventBus(threadPool);
+        this.bus = new AsyncEventBus(threadPool);
     }
 
     @Override
