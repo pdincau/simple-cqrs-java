@@ -1,24 +1,26 @@
-package domain;
+package infrastructure;
 
 import com.google.common.eventbus.AsyncEventBus;
-import events.Event;
-import events.EventPublisher;
+import commands.Command;
+import commands.CommandSender;
+import commands.handlers.InventoryCommandHandlers;
 
 import java.util.concurrent.ExecutorService;
 
 import static java.util.concurrent.Executors.newCachedThreadPool;
 
-public class EventBus implements EventPublisher {
+public class CommandBus implements CommandSender {
 
     private static final ExecutorService threadPool = newCachedThreadPool();
     private final AsyncEventBus bus;
 
-    public EventBus() {
+    public CommandBus(InventoryCommandHandlers handler) {
         this.bus = new AsyncEventBus(threadPool);
+        this.bus.register(handler);
     }
 
     @Override
-    public void publish(Event event) {
-        bus.post(event);
+    public void send(Command command) {
+        bus.post(command);
     }
 }
