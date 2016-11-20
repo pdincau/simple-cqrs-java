@@ -2,6 +2,7 @@ package commands;
 
 import domain.AggregateRootRepository;
 import domain.InventoryItem;
+import com.google.common.eventbus.Subscribe;
 
 public class InventoryCommandHandlers {
 
@@ -11,29 +12,34 @@ public class InventoryCommandHandlers {
         this.repository = repository;
     }
 
+    @Subscribe
     public void handle(CreateInventoryItem command) {
         InventoryItem item = new InventoryItem(command.inventoryItemId, command.name);
         repository.save(item, -1);
     }
 
+    @Subscribe
     public void handle(RenameInventoryItem command) {
         InventoryItem item = repository.getById(command.inventoryItemId);
         item.changeName(command.newName);
         repository.save(item, command.originalVersion);
     }
 
+    @Subscribe
     public void handle(RemoveItemsFromInventory command) {
         InventoryItem item = repository.getById(command.inventoryItemId);
         item.remove(command.count);
         repository.save(item, command.originalVersion);
     }
 
+    @Subscribe
     public void handle(CheckInItemsToInventory command) {
         InventoryItem item = repository.getById(command.inventoryItemId);
         item.checkIn(command.count);
         repository.save(item, command.originalVersion);
     }
 
+    @Subscribe
     public void handle(DeactivateInventoryItem command) {
         InventoryItem item = repository.getById(command.inventoryItemId);
         item.deactivate();
