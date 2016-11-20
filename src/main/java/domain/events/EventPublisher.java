@@ -1,4 +1,4 @@
-package events;
+package domain.events;
 
 public interface EventPublisher {
 

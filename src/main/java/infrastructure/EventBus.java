@@ -1,8 +1,8 @@
 package infrastructure;
 
 import com.google.common.eventbus.AsyncEventBus;
-import events.Event;
-import events.EventPublisher;
+import domain.events.Event;
+import domain.events.EventPublisher;
 
 import java.util.concurrent.ExecutorService;
 

@@ -1,9 +1,9 @@
 package infrastructure;
 
 import domain.AggregateRootRepository;
-import events.EventStore;
+import domain.events.EventStore;
 import domain.InventoryItem;
-import events.Event;
+import domain.events.Event;
 
 import java.util.List;
 import java.util.UUID;

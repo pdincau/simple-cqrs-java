@@ -1,6 +1,6 @@
 package domain;
 
-import events.*;
+import domain.events.*;
 import exceptions.ArgumentException;
 import exceptions.InvalidOperationException;
 import org.apache.commons.lang3.StringUtils;

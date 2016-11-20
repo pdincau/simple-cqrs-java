@@ -1,9 +1,9 @@
 package infrastructure;
 
 import com.google.common.eventbus.AsyncEventBus;
-import commands.Command;
-import commands.CommandSender;
-import commands.handlers.InventoryCommandHandlers;
+import domain.commands.Command;
+import domain.commands.CommandSender;
+import domain.commands.handlers.InventoryCommandHandlers;
 
 import java.util.concurrent.ExecutorService;
 

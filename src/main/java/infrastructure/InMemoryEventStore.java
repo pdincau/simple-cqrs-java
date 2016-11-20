@@ -1,9 +1,9 @@
 package infrastructure;
 
-import events.Event;
-import events.EventDescriptor;
-import events.EventPublisher;
-import events.EventStore;
+import domain.events.Event;
+import domain.events.EventDescriptor;
+import domain.events.EventPublisher;
+import domain.events.EventStore;
 import exceptions.AggregateNotFoundException;
 import exceptions.ConcurrencyException;
 
@@ -34,7 +34,7 @@ public class InMemoryEventStore implements EventStore {
         int i = expectedVersion;
 
         for (Event event : events) {
-            // TODO: do we really need events.EventDescriptor.version ?
+            // TODO: do we really need domain.events.EventDescriptor.version ?
             i++;
             event.version = i;
             eventDescriptors.add(new EventDescriptor(event, aggregateId, i));

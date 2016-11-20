@@ -1,6 +1,6 @@
 package domain;
 
-import events.Event;
+import domain.events.Event;
 
 import java.util.ArrayList;
 import java.util.List;

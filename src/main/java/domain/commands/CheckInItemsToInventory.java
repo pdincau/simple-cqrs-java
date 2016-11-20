@@ -1,4 +1,4 @@
-package commands;
+package domain.commands;
 
 import java.util.UUID;
 
