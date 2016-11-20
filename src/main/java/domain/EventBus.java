@@ -1,5 +1,6 @@
 package domain;
 
+import com.google.common.eventbus.AsyncEventBus;
 import events.Event;
 import events.DomainEventPublisher;
 
@@ -10,14 +11,14 @@ import static java.util.concurrent.Executors.newCachedThreadPool;
 public class EventBus implements DomainEventPublisher {
 
     private static final ExecutorService threadPool = newCachedThreadPool();
-    private final EventPublisher publisher;
+    private final AsyncEventBus bus;
 
     public EventBus() {
-        publisher = new AsyncEventBus(threadPool);
+        bus = new AsyncEventBus(threadPool);
     }
 
     @Override
     public void publish(Event event) {
-        publisher.publish(event);
+        bus.post(event);
     }
 }
