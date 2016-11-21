@@ -3,6 +3,7 @@ package infrastructure;
 import com.google.common.eventbus.AsyncEventBus;
 import domain.events.Event;
 import domain.events.EventPublisher;
+import domain.events.handlers.InventoryEventHandler;
 
 import java.util.concurrent.ExecutorService;
 
@@ -13,8 +14,9 @@ public class EventBus implements EventPublisher {
     private static final ExecutorService threadPool = newCachedThreadPool();
     private final AsyncEventBus bus;
 
-    public EventBus() {
+    public EventBus(InventoryEventHandler handler) {
         this.bus = new AsyncEventBus(threadPool);
+        this.bus.register(handler);
     }
 
     @Override

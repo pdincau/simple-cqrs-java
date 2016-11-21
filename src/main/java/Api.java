@@ -7,6 +7,9 @@ import com.spotify.apollo.route.Route;
 import domain.commands.CommandSender;
 import domain.commands.CreateInventoryItem;
 import domain.commands.handlers.InventoryCommandHandlers;
+import domain.events.EventPublisher;
+import domain.events.EventStore;
+import domain.events.handlers.InventoryEventHandler;
 import infrastructure.CommandBus;
 import infrastructure.EventBus;
 import infrastructure.InMemoryEventStore;
@@ -19,8 +22,9 @@ import static com.spotify.apollo.Status.CREATED;
 
 public class Api {
 
-    private static final EventBus eventBus = new EventBus();
-    private static final InMemoryEventStore eventStore = new InMemoryEventStore(eventBus);
+    private static final InventoryEventHandler view = new InventoryEventHandler();
+    private static final EventPublisher eventBus = new EventBus(view);
+    private static final EventStore eventStore = new InMemoryEventStore(eventBus);
     private static final InventoryItemRepository inventoryItemRepository = new InventoryItemRepository(eventStore);
     private static final InventoryCommandHandlers handler = new InventoryCommandHandlers(inventoryItemRepository);
     private static final CommandSender commandBus = new CommandBus(handler);
