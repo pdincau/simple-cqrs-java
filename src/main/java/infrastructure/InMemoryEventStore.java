@@ -34,13 +34,11 @@ public class InMemoryEventStore implements EventStore {
         int i = expectedVersion;
 
         for (Event event : events) {
-            // TODO: do we really need domain.events.EventDescriptor.version ?
             i++;
             event.version = i;
             eventDescriptors.add(new EventDescriptor(event, aggregateId, i));
             publisher.publish(event);
         }
-
     }
 
     @Override
