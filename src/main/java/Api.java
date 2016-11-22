@@ -6,6 +6,7 @@ import com.spotify.apollo.httpservice.LoadingException;
 import com.spotify.apollo.route.Route;
 import domain.commands.CommandSender;
 import domain.commands.CreateInventoryItem;
+import domain.commands.DeactivateInventoryItem;
 import domain.commands.handlers.InventoryCommandHandlers;
 import domain.events.EventPublisher;
 import domain.events.EventStore;
@@ -18,6 +19,7 @@ import okio.ByteString;
 
 import java.util.UUID;
 
+import static com.spotify.apollo.Status.ACCEPTED;
 import static com.spotify.apollo.Status.CREATED;
 
 public class Api {
@@ -36,13 +38,22 @@ public class Api {
     private static void init(Environment environment) {
         environment.routingEngine()
                 .registerAutoRoute(Route.sync("POST", "/createItem", Api::createItem))
+                .registerAutoRoute(Route.sync("POST", "/deactivateItem", Api::deactivateItem))
                 .registerAutoRoute(Route.sync("GET", "/ping", context -> "pong"));
     }
 
     private static Response<ByteString> createItem(RequestContext context)  {
         String name = context.request().parameter("name").orElse("");
-        commandBus.send(new CreateInventoryItem(UUID.randomUUID(), name));
+        UUID id = UUID.randomUUID();
+        commandBus.send(new CreateInventoryItem(id, name));
         return Response.forStatus(CREATED);
+    }
+
+    private static Response<ByteString> deactivateItem(RequestContext context)  {
+        String id = context.request().parameter("id").orElse("");
+        String version = context.request().parameter("version").orElse("");
+        commandBus.send(new DeactivateInventoryItem(UUID.fromString(id), Integer.parseInt(version)));
+        return Response.forStatus(ACCEPTED);
     }
 
 }
