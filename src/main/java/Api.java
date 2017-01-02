@@ -71,19 +71,21 @@ public class Api {
         return Response.forStatus(OK).withHeaders(headers()).withPayload(encodeUtf8(body));
     }
 
-    private static Response<ByteString> createItem(RequestContext context)  {
+    private static Response<Object> createItem(RequestContext context)  {
         String name = context.request().parameter("name").orElse("");
-        UUID id = UUID.randomUUID();
-        System.out.println("Create item with id: " + id);
-        commandBus.send(new CreateInventoryItem(id, name));
-        return Response.forStatus(CREATED);
+        UUID aggregateId = UUID.randomUUID();
+        UUID commandId = UUID.randomUUID();
+        System.out.println("Create item with id: " + aggregateId);
+        commandBus.send(new CreateInventoryItem(commandId, aggregateId, name));
+        return Response.forStatus(CREATED).withHeader("location", locationForCommandProjection(commandId));
     }
 
     private static Response<ByteString> deactivateItem(RequestContext context)  {
         String id = context.request().parameter("id").orElse("");
+        UUID commandId = UUID.randomUUID();
         System.out.println("Deactivate item with id: " + id);
         String version = context.request().parameter("version").orElse("");
-        commandBus.send(new DeactivateInventoryItem(UUID.fromString(id), Integer.parseInt(version)));
+        commandBus.send(new DeactivateInventoryItem(commandId, UUID.fromString(id), Integer.parseInt(version)));
         return Response.forStatus(ACCEPTED);
     }
 
@@ -92,6 +94,10 @@ public class Api {
                 .put("Content-Type", "application/json")
                 .put("charset", "utf8")
                 .build();
+    }
+
+    private static String locationForCommandProjection(UUID commandId) {
+        return "/projections/command-status?command_id=" + commandId.toString();
     }
 
 }

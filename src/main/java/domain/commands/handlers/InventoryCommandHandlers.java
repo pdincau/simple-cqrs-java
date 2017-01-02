@@ -4,6 +4,7 @@ import domain.commands.*;
 import domain.AggregateRootRepository;
 import domain.InventoryItem;
 import com.google.common.eventbus.Subscribe;
+import exceptions.InvalidOperationException;
 
 public class InventoryCommandHandlers {
 
@@ -42,8 +43,13 @@ public class InventoryCommandHandlers {
 
     @Subscribe
     public void handle(DeactivateInventoryItem command) {
-        InventoryItem item = repository.getById(command.inventoryItemId);
-        item.deactivate();
-        repository.save(item, command.originalVersion);
+        // TODO: cache successful, unsucessful command result
+        try {
+            InventoryItem item = repository.getById(command.inventoryItemId);
+            item.deactivate();
+            repository.save(item, command.originalVersion);
+        } catch (InvalidOperationException e) {
+            System.out.println("failed command with id: " + command.id + " " + e.getMessage());
+        }
     }
 }
