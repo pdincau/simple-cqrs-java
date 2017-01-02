@@ -65,6 +65,7 @@ public class Api {
 
     private static Response<ByteString> item(RequestContext context) {
         String id = context.request().parameter("id").orElse("");
+        System.out.println("Show item with id: " + id);
         InventoryItemDetailsDto inventoryItemDetails = readModel.getInventoryItemDetails(UUID.fromString(id));
         String body = new Gson().toJson(inventoryItemDetails);
         return Response.forStatus(OK).withHeaders(headers()).withPayload(encodeUtf8(body));
@@ -73,12 +74,14 @@ public class Api {
     private static Response<ByteString> createItem(RequestContext context)  {
         String name = context.request().parameter("name").orElse("");
         UUID id = UUID.randomUUID();
+        System.out.println("Create item with id: " + id);
         commandBus.send(new CreateInventoryItem(id, name));
         return Response.forStatus(CREATED);
     }
 
     private static Response<ByteString> deactivateItem(RequestContext context)  {
         String id = context.request().parameter("id").orElse("");
+        System.out.println("Deactivate item with id: " + id);
         String version = context.request().parameter("version").orElse("");
         commandBus.send(new DeactivateInventoryItem(UUID.fromString(id), Integer.parseInt(version)));
         return Response.forStatus(ACCEPTED);

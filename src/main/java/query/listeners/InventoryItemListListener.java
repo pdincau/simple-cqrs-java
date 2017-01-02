@@ -16,17 +16,17 @@ public class InventoryItemListListener {
 
     @Subscribe
     public void consume(InventoryItemCreated event) {
-        System.out.println("item created");
+        System.out.println(this.getClass().getCanonicalName() + " item created handled");
     }
 
     @Subscribe
     public void consume(InventoryItemDeactivated event) {
-        System.out.println("item deactivated");
+        System.out.println(this.getClass().getCanonicalName() + " item deactivated handled");
     }
 
     @Subscribe
     public void consume(InventoryItemRenamed event) {
-        System.out.println("item renamed");
+        System.out.println(this.getClass().getCanonicalName() + " item renamed handled");
     }
 
 

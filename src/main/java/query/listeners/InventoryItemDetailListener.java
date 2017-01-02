@@ -15,27 +15,27 @@ public class InventoryItemDetailListener {
 
     @Subscribe
     public void consume(InventoryItemCreated event) {
-        System.out.println("item created");
+        System.out.println(this.getClass().getCanonicalName() + " item created handled");
     }
 
     @Subscribe
     public void consume(InventoryItemDeactivated event) {
-        System.out.println("item deactivated");
+        System.out.println(this.getClass().getCanonicalName() + " item deactivated handled");
     }
 
     @Subscribe
     public void consume(InventoryItemRenamed event) {
-        System.out.println("item renamed");
+        System.out.println(this.getClass().getCanonicalName() + " item renamed handled");
     }
 
     @Subscribe
     public void consume(ItemsRemovedFromInventory event) {
-        System.out.println("item removed from inventory");
+        System.out.println(this.getClass().getCanonicalName() + " item removed from inventory handled");
     }
 
     @Subscribe
     public void consume(ItemsCheckedInToInventory event) {
-        System.out.println("item checked into inventory");
+        System.out.println(this.getClass().getCanonicalName() + " item checked into inventory handled");
     }
 
 }
