@@ -5,7 +5,6 @@ import domain.AggregateRootRepository;
 import domain.InventoryItem;
 import com.google.common.eventbus.Subscribe;
 
-// TODO: cache successful command result
 public class InventoryCommandHandlers {
 
     private final AggregateRootRepository<InventoryItem> repository;
