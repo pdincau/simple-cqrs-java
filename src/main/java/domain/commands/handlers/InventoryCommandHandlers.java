@@ -4,52 +4,74 @@ import domain.commands.*;
 import domain.AggregateRootRepository;
 import domain.InventoryItem;
 import com.google.common.eventbus.Subscribe;
-import exceptions.InvalidOperationException;
 
+// TODO: cache successful command result
 public class InventoryCommandHandlers {
 
     private final AggregateRootRepository<InventoryItem> repository;
+    private final CommandResultCache cache;
 
-    public InventoryCommandHandlers(AggregateRootRepository<InventoryItem> repository) {
+    public InventoryCommandHandlers(AggregateRootRepository<InventoryItem> repository, CommandResultCache cache) {
         this.repository = repository;
+        this.cache = cache;
     }
 
     @Subscribe
     public void handle(CreateInventoryItem command) {
-        InventoryItem item = new InventoryItem(command.inventoryItemId, command.name);
-        repository.save(item, -1);
+        try {
+            InventoryItem item = new InventoryItem(command.inventoryItemId, command.name);
+            repository.save(item, -1);
+        } catch (Exception e) {
+            Failure failure = new Failure(command.inventoryItemId, e.getMessage());
+            cache.put(command.id, failure);
+        }
     }
 
     @Subscribe
     public void handle(RenameInventoryItem command) {
-        InventoryItem item = repository.getById(command.inventoryItemId);
-        item.changeName(command.newName);
-        repository.save(item, command.originalVersion);
+        try {
+            InventoryItem item = repository.getById(command.inventoryItemId);
+            item.changeName(command.newName);
+            repository.save(item, command.originalVersion);
+        } catch (Exception e) {
+            Failure failure = new Failure(command.inventoryItemId, e.getMessage());
+            cache.put(command.id, failure);
+        }
     }
 
     @Subscribe
     public void handle(RemoveItemsFromInventory command) {
-        InventoryItem item = repository.getById(command.inventoryItemId);
-        item.remove(command.count);
-        repository.save(item, command.originalVersion);
+        try {
+            InventoryItem item = repository.getById(command.inventoryItemId);
+            item.remove(command.count);
+            repository.save(item, command.originalVersion);
+        } catch (Exception e) {
+            Failure failure = new Failure(command.inventoryItemId, e.getMessage());
+            cache.put(command.id, failure);
+        }
     }
 
     @Subscribe
     public void handle(CheckInItemsToInventory command) {
-        InventoryItem item = repository.getById(command.inventoryItemId);
-        item.checkIn(command.count);
-        repository.save(item, command.originalVersion);
+        try {
+            InventoryItem item = repository.getById(command.inventoryItemId);
+            item.checkIn(command.count);
+            repository.save(item, command.originalVersion);
+        } catch (Exception e) {
+            Failure failure = new Failure(command.inventoryItemId, e.getMessage());
+            cache.put(command.id, failure);
+        }
     }
 
     @Subscribe
     public void handle(DeactivateInventoryItem command) {
-        // TODO: cache successful, unsucessful command result
         try {
             InventoryItem item = repository.getById(command.inventoryItemId);
             item.deactivate();
             repository.save(item, command.originalVersion);
-        } catch (InvalidOperationException e) {
-            System.out.println("failed command with id: " + command.id + " " + e.getMessage());
+        } catch (Exception e) {
+            Failure failure = new Failure(command.inventoryItemId, e.getMessage());
+            cache.put(command.id, failure);
         }
     }
 }

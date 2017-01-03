@@ -9,6 +9,9 @@ import com.spotify.apollo.route.Route;
 import domain.commands.CommandSender;
 import domain.commands.CreateInventoryItem;
 import domain.commands.DeactivateInventoryItem;
+import domain.commands.handlers.CommandResultCache;
+import domain.commands.handlers.Failure;
+import domain.commands.handlers.InMemoryCommandResultCache;
 import domain.commands.handlers.InventoryCommandHandlers;
 import domain.events.EventPublisher;
 import domain.events.EventStore;
@@ -27,19 +30,18 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
-import static com.spotify.apollo.Status.ACCEPTED;
-import static com.spotify.apollo.Status.CREATED;
-import static com.spotify.apollo.Status.OK;
+import static com.spotify.apollo.Status.*;
 import static okio.ByteString.encodeUtf8;
 
 public class Api {
 
+    private static final CommandResultCache cache = new InMemoryCommandResultCache();
     private static final InventoryItemListListener list = new InventoryItemListListener();
     private static final InventoryItemDetailListener detail = new InventoryItemDetailListener();
     private static final EventPublisher eventBus = new EventBus(list, detail);
     private static final EventStore eventStore = new InMemoryEventStore(eventBus);
     private static final InventoryItemRepository inventoryItemRepository = new InventoryItemRepository(eventStore);
-    private static final InventoryCommandHandlers handler = new InventoryCommandHandlers(inventoryItemRepository);
+    private static final InventoryCommandHandlers handler = new InventoryCommandHandlers(inventoryItemRepository, cache);
     private static final CommandSender commandBus = new CommandBus(handler);
 
     private static ReadModelFacade readModel = new ReadModelFacade();
@@ -54,6 +56,7 @@ public class Api {
                 .registerAutoRoute(Route.sync("POST", "/deactivateItem", Api::deactivateItem))
                 .registerAutoRoute(Route.sync("GET", "/items", Api::items))
                 .registerAutoRoute(Route.sync("GET", "/item", Api::item))
+                .registerAutoRoute(Route.sync("GET", "/command-status", Api::commandStatus))
                 .registerAutoRoute(Route.sync("GET", "/ping", context -> "pong"));
     }
 
@@ -80,14 +83,27 @@ public class Api {
         return Response.forStatus(CREATED).withHeader("location", locationForCommandProjection(commandId));
     }
 
-    private static Response<ByteString> deactivateItem(RequestContext context)  {
+    private static Response<Object> deactivateItem(RequestContext context)  {
         String id = context.request().parameter("id").orElse("");
         UUID commandId = UUID.randomUUID();
         System.out.println("Deactivate item with id: " + id);
         String version = context.request().parameter("version").orElse("");
         commandBus.send(new DeactivateInventoryItem(commandId, UUID.fromString(id), Integer.parseInt(version)));
-        return Response.forStatus(ACCEPTED);
+        return Response.forStatus(ACCEPTED).withHeader("location", locationForCommandProjection(commandId));
     }
+
+    private static Response<Object> commandStatus(RequestContext context) {
+        String id = context.request().parameter("id").orElse("");
+        System.out.println("Command result for command with id: " + id);
+        Failure result = cache.get(UUID.fromString(id));
+
+        if (result == null) {
+            return Response.forStatus(NOT_FOUND);
+        }
+        String body = new Gson().toJson(result);
+        return Response.forStatus(OK).withPayload(encodeUtf8(body));
+    }
+
 
     private static Map<String, String> headers() {
         return ImmutableMap.<String, String>builder()
@@ -97,7 +113,7 @@ public class Api {
     }
 
     private static String locationForCommandProjection(UUID commandId) {
-        return "/projections/command-status?command_id=" + commandId.toString();
+        return "/command-status?id=" + commandId.toString();
     }
 
 }
