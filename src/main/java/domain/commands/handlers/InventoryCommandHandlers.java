@@ -21,9 +21,10 @@ public class InventoryCommandHandlers {
         try {
             InventoryItem item = new InventoryItem(command.inventoryItemId, command.name);
             repository.save(item, -1);
+            cache.put(command.id, new Success(command.inventoryItemId));
         } catch (Exception e) {
-            Failure failure = new Failure(command.inventoryItemId, e.getMessage());
-            cache.put(command.id, failure);
+            Failure result = new Failure(command.inventoryItemId, e.getMessage());
+            cache.put(command.id, result);
         }
     }
 
@@ -33,9 +34,10 @@ public class InventoryCommandHandlers {
             InventoryItem item = repository.getById(command.inventoryItemId);
             item.changeName(command.newName);
             repository.save(item, command.originalVersion);
+            cache.put(command.id, new Success(command.inventoryItemId));
         } catch (Exception e) {
-            Failure failure = new Failure(command.inventoryItemId, e.getMessage());
-            cache.put(command.id, failure);
+            Failure result = new Failure(command.inventoryItemId, e.getMessage());
+            cache.put(command.id, result);
         }
     }
 
@@ -45,9 +47,10 @@ public class InventoryCommandHandlers {
             InventoryItem item = repository.getById(command.inventoryItemId);
             item.remove(command.count);
             repository.save(item, command.originalVersion);
+            cache.put(command.id, new Success(command.inventoryItemId));
         } catch (Exception e) {
-            Failure failure = new Failure(command.inventoryItemId, e.getMessage());
-            cache.put(command.id, failure);
+            Failure result = new Failure(command.inventoryItemId, e.getMessage());
+            cache.put(command.id, result);
         }
     }
 
@@ -57,9 +60,10 @@ public class InventoryCommandHandlers {
             InventoryItem item = repository.getById(command.inventoryItemId);
             item.checkIn(command.count);
             repository.save(item, command.originalVersion);
+            cache.put(command.id, new Success(command.inventoryItemId));
         } catch (Exception e) {
-            Failure failure = new Failure(command.inventoryItemId, e.getMessage());
-            cache.put(command.id, failure);
+            Failure result = new Failure(command.inventoryItemId, e.getMessage());
+            cache.put(command.id, result);
         }
     }
 
@@ -69,9 +73,10 @@ public class InventoryCommandHandlers {
             InventoryItem item = repository.getById(command.inventoryItemId);
             item.deactivate();
             repository.save(item, command.originalVersion);
+            cache.put(command.id, new Success(command.inventoryItemId));
         } catch (Exception e) {
-            Failure failure = new Failure(command.inventoryItemId, e.getMessage());
-            cache.put(command.id, failure);
+            Failure result = new Failure(command.inventoryItemId, e.getMessage());
+            cache.put(command.id, result);
         }
     }
 }

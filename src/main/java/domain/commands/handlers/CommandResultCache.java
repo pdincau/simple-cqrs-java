@@ -4,7 +4,7 @@ import java.util.UUID;
 
 public interface CommandResultCache {
 
-    void put(UUID id, Failure result);
+    void put(UUID id, Result result);
 
-    Failure get(UUID id);
+    Result get(UUID id);
 }

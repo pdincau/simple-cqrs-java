@@ -2,14 +2,13 @@ package domain.commands.handlers;
 
 import java.util.UUID;
 
-public class Failure {
+public class Failure extends Result {
 
-    private final UUID aggregateId;
-    private final String message;
+    private final String error;
 
-    public Failure(UUID aggregateId, String message) {
-        this.aggregateId = aggregateId;
-        this.message = message;
+    public Failure(UUID aggregateId, String error) {
+        super(aggregateId);
+        this.error = error;
     }
 
 }

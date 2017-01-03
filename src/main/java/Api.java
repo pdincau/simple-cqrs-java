@@ -9,10 +9,7 @@ import com.spotify.apollo.route.Route;
 import domain.commands.CommandSender;
 import domain.commands.CreateInventoryItem;
 import domain.commands.DeactivateInventoryItem;
-import domain.commands.handlers.CommandResultCache;
-import domain.commands.handlers.Failure;
-import domain.commands.handlers.InMemoryCommandResultCache;
-import domain.commands.handlers.InventoryCommandHandlers;
+import domain.commands.handlers.*;
 import domain.events.EventPublisher;
 import domain.events.EventStore;
 import infrastructure.CommandBus;
@@ -68,7 +65,6 @@ public class Api {
 
     private static Response<ByteString> item(RequestContext context) {
         String id = context.request().parameter("id").orElse("");
-        System.out.println("Show item with id: " + id);
         InventoryItemDetailsDto inventoryItemDetails = readModel.getInventoryItemDetails(UUID.fromString(id));
         String body = new Gson().toJson(inventoryItemDetails);
         return Response.forStatus(OK).withHeaders(headers()).withPayload(encodeUtf8(body));
@@ -78,7 +74,6 @@ public class Api {
         String name = context.request().parameter("name").orElse("");
         UUID aggregateId = UUID.randomUUID();
         UUID commandId = UUID.randomUUID();
-        System.out.println("Create item with id: " + aggregateId);
         commandBus.send(new CreateInventoryItem(commandId, aggregateId, name));
         return Response.forStatus(CREATED).withHeader("location", locationForCommandProjection(commandId));
     }
@@ -86,7 +81,6 @@ public class Api {
     private static Response<Object> deactivateItem(RequestContext context)  {
         String id = context.request().parameter("id").orElse("");
         UUID commandId = UUID.randomUUID();
-        System.out.println("Deactivate item with id: " + id);
         String version = context.request().parameter("version").orElse("");
         commandBus.send(new DeactivateInventoryItem(commandId, UUID.fromString(id), Integer.parseInt(version)));
         return Response.forStatus(ACCEPTED).withHeader("location", locationForCommandProjection(commandId));
@@ -94,8 +88,7 @@ public class Api {
 
     private static Response<Object> commandStatus(RequestContext context) {
         String id = context.request().parameter("id").orElse("");
-        System.out.println("Command result for command with id: " + id);
-        Failure result = cache.get(UUID.fromString(id));
+        Result result = cache.get(UUID.fromString(id));
 
         if (result == null) {
             return Response.forStatus(NOT_FOUND);
