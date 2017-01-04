@@ -64,14 +64,14 @@ public class Api {
     }
 
     private static Response<ByteString> item(RequestContext context) {
-        String id = context.request().parameter("id").orElse("");
+        String id = pathParameter(context, "id");
         InventoryItemDetailsDto inventoryItemDetails = readModel.getInventoryItemDetails(UUID.fromString(id));
         String body = new Gson().toJson(inventoryItemDetails);
         return Response.forStatus(OK).withHeaders(headers()).withPayload(encodeUtf8(body));
     }
 
     private static Response<Object> createItem(RequestContext context)  {
-        String name = context.request().parameter("name").orElse("");
+        String name = pathParameter(context, "name");
         UUID aggregateId = UUID.randomUUID();
         UUID commandId = UUID.randomUUID();
         commandBus.send(new CreateInventoryItem(commandId, aggregateId, name));
@@ -79,15 +79,15 @@ public class Api {
     }
 
     private static Response<Object> deactivateItem(RequestContext context)  {
-        String id = context.request().parameter("id").orElse("");
+        String id = pathParameter(context, "id");
         UUID commandId = UUID.randomUUID();
-        String version = context.request().parameter("version").orElse("");
+        String version = pathParameter(context, "version");
         commandBus.send(new DeactivateInventoryItem(commandId, UUID.fromString(id), Integer.parseInt(version)));
         return Response.forStatus(ACCEPTED).withHeader("location", locationForCommandResult(commandId));
     }
 
     private static Response<Object> commandStatus(RequestContext context) {
-        String id = context.request().parameter("id").orElse("");
+        String id = pathParameter(context, "id");
         Result result = cache.get(UUID.fromString(id));
 
         if (result == null) {
@@ -97,6 +97,9 @@ public class Api {
         return Response.forStatus(OK).withPayload(encodeUtf8(body));
     }
 
+    private static String pathParameter(RequestContext context, String parameter) {
+        return context.request().parameter(parameter).orElse("");
+    }
 
     private static Map<String, String> headers() {
         return ImmutableMap.<String, String>builder()
