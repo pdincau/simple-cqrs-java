@@ -21,6 +21,7 @@ public class InventoryItemRepository implements AggregateRootRepository<Inventor
         storage.saveEvents(inventoryItem.getId(), inventoryItem.getUncommittedChanges(), expectedVersion);
         //TODO: check whether this is correct
         inventoryItem.markChangesAsCommitted();
+        inventoryItem.setVersion(expectedVersion + 1);
     }
 
     @Override
@@ -29,7 +30,7 @@ public class InventoryItemRepository implements AggregateRootRepository<Inventor
         List<Event> events = storage.getEventsForAggregate(id);
         inventoryItem.loadsFromHistory(events);
         //TODO: check whether this is correct
-        inventoryItem.setVersion(events.get(events.size()-1).version);
+        inventoryItem.setVersion(events.get(events.size() - 1).version);
         return inventoryItem;
     }
 
