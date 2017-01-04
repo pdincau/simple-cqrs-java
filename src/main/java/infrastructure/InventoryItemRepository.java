@@ -19,6 +19,7 @@ public class InventoryItemRepository implements AggregateRootRepository<Inventor
     @Override
     public void save(InventoryItem inventoryItem, int expectedVersion) {
         storage.saveEvents(inventoryItem.getId(), inventoryItem.getUncommittedChanges(), expectedVersion);
+        inventoryItem.markChangesAsCommitted();
     }
 
     @Override
