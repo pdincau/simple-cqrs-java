@@ -22,8 +22,7 @@ public class InventoryCommandHandlers {
             repository.save(item, -1);
             cache.put(command.id, new Success(command.inventoryItemId));
         } catch (Exception e) {
-            Failure result = new Failure(command.inventoryItemId, e.getMessage());
-            cache.put(command.id, result);
+            cache.put(command.id, new Failure(command.inventoryItemId, e.getMessage()));
         }
     }
 
@@ -35,8 +34,7 @@ public class InventoryCommandHandlers {
             repository.save(item, command.originalVersion);
             cache.put(command.id, new Success(command.inventoryItemId));
         } catch (Exception e) {
-            Failure result = new Failure(command.inventoryItemId, e.getMessage());
-            cache.put(command.id, result);
+            cache.put(command.id, new Failure(command.inventoryItemId, e.getMessage()));
         }
     }
 
@@ -48,8 +46,7 @@ public class InventoryCommandHandlers {
             repository.save(item, command.originalVersion);
             cache.put(command.id, new Success(command.inventoryItemId));
         } catch (Exception e) {
-            Failure result = new Failure(command.inventoryItemId, e.getMessage());
-            cache.put(command.id, result);
+            cache.put(command.id, new Failure(command.inventoryItemId, e.getMessage()));
         }
     }
 
@@ -61,8 +58,7 @@ public class InventoryCommandHandlers {
             repository.save(item, command.originalVersion);
             cache.put(command.id, new Success(command.inventoryItemId));
         } catch (Exception e) {
-            Failure result = new Failure(command.inventoryItemId, e.getMessage());
-            cache.put(command.id, result);
+            cache.put(command.id, new Failure(command.inventoryItemId, e.getMessage()));
         }
     }
 
@@ -74,8 +70,7 @@ public class InventoryCommandHandlers {
             repository.save(item, command.originalVersion);
             cache.put(command.id, new Success(command.inventoryItemId));
         } catch (Exception e) {
-            Failure result = new Failure(command.inventoryItemId, e.getMessage());
-            cache.put(command.id, result);
+            cache.put(command.id, new Failure(command.inventoryItemId, e.getMessage()));
         }
     }
 }
