@@ -75,7 +75,7 @@ public class Api {
         UUID aggregateId = UUID.randomUUID();
         UUID commandId = UUID.randomUUID();
         commandBus.send(new CreateInventoryItem(commandId, aggregateId, name));
-        return Response.forStatus(CREATED).withHeader("location", locationForCommandProjection(commandId));
+        return Response.forStatus(CREATED).withHeader("location", locationForCommandResult(commandId));
     }
 
     private static Response<Object> deactivateItem(RequestContext context)  {
@@ -83,7 +83,7 @@ public class Api {
         UUID commandId = UUID.randomUUID();
         String version = context.request().parameter("version").orElse("");
         commandBus.send(new DeactivateInventoryItem(commandId, UUID.fromString(id), Integer.parseInt(version)));
-        return Response.forStatus(ACCEPTED).withHeader("location", locationForCommandProjection(commandId));
+        return Response.forStatus(ACCEPTED).withHeader("location", locationForCommandResult(commandId));
     }
 
     private static Response<Object> commandStatus(RequestContext context) {
@@ -105,7 +105,7 @@ public class Api {
                 .build();
     }
 
-    private static String locationForCommandProjection(UUID commandId) {
+    private static String locationForCommandResult(UUID commandId) {
         return "/command-status?id=" + commandId.toString();
     }
 
