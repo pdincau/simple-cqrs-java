@@ -1,4 +1,4 @@
-package domain.commands.handlers;
+package domain.commands.results;
 
 import java.util.UUID;
 

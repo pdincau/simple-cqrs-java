@@ -4,6 +4,8 @@ import domain.commands.*;
 import domain.AggregateRootRepository;
 import domain.InventoryItem;
 import com.google.common.eventbus.Subscribe;
+import domain.commands.results.Failure;
+import domain.commands.results.Success;
 
 public class InventoryCommandHandlers {
 
