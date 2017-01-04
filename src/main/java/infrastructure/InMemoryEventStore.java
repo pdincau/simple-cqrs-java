@@ -49,7 +49,7 @@ public class InMemoryEventStore implements EventStore {
             throw new AggregateNotFoundException();
         }
 
-        return eventDescriptors.stream().map(desc -> desc.event).collect(toList());
+        return eventDescriptors.stream().map(descriptor -> descriptor.event).collect(toList());
     }
 
 }
