@@ -22,6 +22,10 @@ public abstract class AggregateRoot {
         this.version = version;
     }
 
+    public Boolean shouldTakeSnapshot() {
+        return getVersion() % 50 == 0;
+    }
+
     public List<Event> getUncommittedChanges() {
         return changes;
     }
@@ -46,5 +50,4 @@ public abstract class AggregateRoot {
             changes.add(event);
         }
     }
-
 }
