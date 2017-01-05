@@ -6,8 +6,8 @@ public class DeactivateInventoryItem extends Command {
 
     public final int originalVersion;
 
-    public DeactivateInventoryItem(UUID inventoryItemId, int originalVersion) {
-        super(inventoryItemId);
+    public DeactivateInventoryItem(UUID id, UUID inventoryItemId, int originalVersion) {
+        super(id, inventoryItemId);
         this.originalVersion = originalVersion;
     }
 }

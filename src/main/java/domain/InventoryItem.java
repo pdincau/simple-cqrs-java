@@ -27,14 +27,14 @@ public class InventoryItem extends AggregateRoot {
 
     public void deactivate() {
         if (!activated) {
-            throw new InvalidOperationException("already deactivated");
+            throw new InvalidOperationException("item already deactivated");
         }
         applyChange(new InventoryItemDeactivated(id));
     }
 
     public void remove(int count) {
         if (count <= 0) {
-            throw new InvalidOperationException("cant remove negative count from inventory");
+            throw new InvalidOperationException("can't remove negative count from inventory");
         }
         applyChange(new ItemsRemovedFromInventory(id, count));
     }
@@ -48,7 +48,7 @@ public class InventoryItem extends AggregateRoot {
 
     public void changeName(String newName) {
         if (StringUtils.isBlank(newName)) {
-            throw new ArgumentException("newName");
+            throw new ArgumentException("new item name can't be blank");
         }
         applyChange(new InventoryItemRenamed(id, newName));
     }

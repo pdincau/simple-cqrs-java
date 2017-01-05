@@ -7,8 +7,8 @@ public class RemoveItemsFromInventory extends Command {
     public final int count;
     public final int originalVersion;
 
-    public RemoveItemsFromInventory(UUID inventoryItemId, int count, int originalVersion) {
-        super(inventoryItemId);
+    public RemoveItemsFromInventory(UUID id, UUID inventoryItemId, int count, int originalVersion) {
+        super(id, inventoryItemId);
         this.count = count;
         this.originalVersion = originalVersion;
     }

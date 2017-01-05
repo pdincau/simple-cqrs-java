@@ -9,13 +9,11 @@ import com.spotify.apollo.route.Route;
 import domain.commands.CommandSender;
 import domain.commands.CreateInventoryItem;
 import domain.commands.DeactivateInventoryItem;
-import domain.commands.handlers.InventoryCommandHandlers;
+import domain.commands.handlers.*;
+import domain.commands.results.Result;
 import domain.events.EventPublisher;
 import domain.events.EventStore;
-import infrastructure.CommandBus;
-import infrastructure.EventBus;
-import infrastructure.InMemoryEventStore;
-import infrastructure.InventoryItemRepository;
+import infrastructure.*;
 import okio.ByteString;
 import query.ReadModelFacade;
 import query.dto.InventoryItemDetailsDto;
@@ -27,19 +25,18 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
-import static com.spotify.apollo.Status.ACCEPTED;
-import static com.spotify.apollo.Status.CREATED;
-import static com.spotify.apollo.Status.OK;
+import static com.spotify.apollo.Status.*;
 import static okio.ByteString.encodeUtf8;
 
 public class Api {
 
+    private static final CommandResultCache cache = new InMemoryCommandResultCache();
     private static final InventoryItemListListener list = new InventoryItemListListener();
     private static final InventoryItemDetailListener detail = new InventoryItemDetailListener();
     private static final EventPublisher eventBus = new EventBus(list, detail);
     private static final EventStore eventStore = new InMemoryEventStore(eventBus);
     private static final InventoryItemRepository inventoryItemRepository = new InventoryItemRepository(eventStore);
-    private static final InventoryCommandHandlers handler = new InventoryCommandHandlers(inventoryItemRepository);
+    private static final InventoryCommandHandlers handler = new InventoryCommandHandlers(inventoryItemRepository, cache);
     private static final CommandSender commandBus = new CommandBus(handler);
 
     private static ReadModelFacade readModel = new ReadModelFacade();
@@ -54,6 +51,7 @@ public class Api {
                 .registerAutoRoute(Route.sync("POST", "/deactivateItem", Api::deactivateItem))
                 .registerAutoRoute(Route.sync("GET", "/items", Api::items))
                 .registerAutoRoute(Route.sync("GET", "/item", Api::item))
+                .registerAutoRoute(Route.sync("GET", "/command-status", Api::commandStatus))
                 .registerAutoRoute(Route.sync("GET", "/ping", context -> "pong"));
     }
 
@@ -64,27 +62,41 @@ public class Api {
     }
 
     private static Response<ByteString> item(RequestContext context) {
-        String id = context.request().parameter("id").orElse("");
-        System.out.println("Show item with id: " + id);
+        String id = pathParameter(context, "id");
         InventoryItemDetailsDto inventoryItemDetails = readModel.getInventoryItemDetails(UUID.fromString(id));
         String body = new Gson().toJson(inventoryItemDetails);
         return Response.forStatus(OK).withHeaders(headers()).withPayload(encodeUtf8(body));
     }
 
-    private static Response<ByteString> createItem(RequestContext context)  {
-        String name = context.request().parameter("name").orElse("");
-        UUID id = UUID.randomUUID();
-        System.out.println("Create item with id: " + id);
-        commandBus.send(new CreateInventoryItem(id, name));
-        return Response.forStatus(CREATED);
+    private static Response<Object> createItem(RequestContext context)  {
+        String name = pathParameter(context, "name");
+        UUID aggregateId = UUID.randomUUID();
+        UUID commandId = UUID.randomUUID();
+        commandBus.send(new CreateInventoryItem(commandId, aggregateId, name));
+        return Response.forStatus(CREATED).withHeader("location", locationForCommandResult(commandId));
     }
 
-    private static Response<ByteString> deactivateItem(RequestContext context)  {
-        String id = context.request().parameter("id").orElse("");
-        System.out.println("Deactivate item with id: " + id);
-        String version = context.request().parameter("version").orElse("");
-        commandBus.send(new DeactivateInventoryItem(UUID.fromString(id), Integer.parseInt(version)));
-        return Response.forStatus(ACCEPTED);
+    private static Response<Object> deactivateItem(RequestContext context)  {
+        String id = pathParameter(context, "id");
+        UUID commandId = UUID.randomUUID();
+        String version = pathParameter(context, "version");
+        commandBus.send(new DeactivateInventoryItem(commandId, UUID.fromString(id), Integer.parseInt(version)));
+        return Response.forStatus(ACCEPTED).withHeader("location", locationForCommandResult(commandId));
+    }
+
+    private static Response<Object> commandStatus(RequestContext context) {
+        String id = pathParameter(context, "id");
+        Result result = cache.get(UUID.fromString(id));
+
+        if (result == null) {
+            return Response.forStatus(NOT_FOUND);
+        }
+        String body = new Gson().toJson(result);
+        return Response.forStatus(OK).withPayload(encodeUtf8(body));
+    }
+
+    private static String pathParameter(RequestContext context, String parameter) {
+        return context.request().parameter(parameter).orElse("");
     }
 
     private static Map<String, String> headers() {
@@ -92,6 +104,10 @@ public class Api {
                 .put("Content-Type", "application/json")
                 .put("charset", "utf8")
                 .build();
+    }
+
+    private static String locationForCommandResult(UUID commandId) {
+        return "/command-status?id=" + commandId.toString();
     }
 
 }
