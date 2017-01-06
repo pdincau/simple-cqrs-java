@@ -5,6 +5,7 @@ import domain.events.InventoryItemCreated;
 import domain.events.InventoryItemDeactivated;
 import domain.events.InventoryItemRenamed;
 import query.InMemoryViewRepository;
+import query.dto.InventoryItemListDto;
 
 public class InventoryItemListListener {
 
@@ -17,6 +18,8 @@ public class InventoryItemListListener {
     @Subscribe
     public void consume(InventoryItemCreated event) {
         System.out.println(this.getClass().getCanonicalName() + " item created handled");
+        InventoryItemListDto inventoryItemListDto = new InventoryItemListDto(event.id, event.name);
+        repository.saveListElement(inventoryItemListDto);
     }
 
     @Subscribe

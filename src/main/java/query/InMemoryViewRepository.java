@@ -28,6 +28,10 @@ public class InMemoryViewRepository {
         return list;
     }
 
+    public void saveListElement(InventoryItemListDto inventoryItemListDto) {
+        list.add(inventoryItemListDto);
+    }
+
     public InventoryItemDetailsDto details(UUID id) {
         return details.get(id);
     }
