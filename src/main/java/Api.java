@@ -9,6 +9,7 @@ import com.spotify.apollo.route.Route;
 import domain.commands.CommandSender;
 import domain.commands.CreateInventoryItem;
 import domain.commands.DeactivateInventoryItem;
+import domain.commands.RenameInventoryItem;
 import domain.commands.handlers.*;
 import domain.commands.results.Result;
 import domain.events.EventPublisher;
@@ -49,6 +50,7 @@ public class Api {
         environment.routingEngine()
                 .registerAutoRoute(Route.sync("POST", "/createItem", Api::createItem))
                 .registerAutoRoute(Route.sync("POST", "/deactivateItem", Api::deactivateItem))
+                .registerAutoRoute(Route.sync("POST", "/renameItem", Api::renameItem))
                 .registerAutoRoute(Route.sync("GET", "/items", Api::items))
                 .registerAutoRoute(Route.sync("GET", "/item", Api::item))
                 .registerAutoRoute(Route.sync("GET", "/command-status", Api::commandStatus))
@@ -81,6 +83,15 @@ public class Api {
         UUID commandId = UUID.randomUUID();
         String version = pathParameter(context, "version");
         commandBus.send(new DeactivateInventoryItem(commandId, UUID.fromString(id), Integer.parseInt(version)));
+        return Response.forStatus(ACCEPTED).withHeader("location", locationForCommandResult(commandId));
+    }
+
+    private static Response<Object> renameItem(RequestContext context)  {
+        String id = pathParameter(context, "id");
+        UUID commandId = UUID.randomUUID();
+        String newName = pathParameter(context, "newName");
+        String version = pathParameter(context, "version");
+        commandBus.send(new RenameInventoryItem(commandId, UUID.fromString(id), newName, Integer.parseInt(version)));
         return Response.forStatus(ACCEPTED).withHeader("location", locationForCommandResult(commandId));
     }
 

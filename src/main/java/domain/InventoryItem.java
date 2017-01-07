@@ -11,6 +11,7 @@ public class InventoryItem extends AggregateRoot {
 
     private Boolean activated;
     private UUID id;
+    private String name;
 
     public InventoryItem() {
 
@@ -60,10 +61,15 @@ public class InventoryItem extends AggregateRoot {
         if (event instanceof InventoryItemCreated) {
             id = event.id;
             activated = true;
+            name = ((InventoryItemCreated) event).name;
         }
 
         if (event instanceof InventoryItemDeactivated) {
             activated = false;
+        }
+
+        if (event instanceof InventoryItemRenamed) {
+            name = ((InventoryItemRenamed) event).newName;
         }
     }
 }
