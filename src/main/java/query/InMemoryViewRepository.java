@@ -42,7 +42,8 @@ public class InMemoryViewRepository {
     }
 
     public void updateListElement(InventoryItemListDto inventoryItemListDto) {
-        list.removeIf(element -> (element.id).equals(inventoryItemListDto.id));
-        list.add(inventoryItemListDto);
+        list.stream().filter(item -> (item.id).equals(inventoryItemListDto.id))
+                .findFirst()
+                .ifPresent(i -> i.name = inventoryItemListDto.name);
     }
 }
