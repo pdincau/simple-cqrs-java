@@ -4,7 +4,6 @@ import query.dto.InventoryItemDetailsDto;
 import query.dto.InventoryItemListDto;
 
 import java.util.*;
-import java.util.function.Predicate;
 
 public class InMemoryViewRepository {
 
@@ -44,6 +43,6 @@ public class InMemoryViewRepository {
     public void updateListElement(InventoryItemListDto inventoryItemListDto) {
         list.stream().filter(item -> (item.id).equals(inventoryItemListDto.id))
                 .findFirst()
-                .ifPresent(i -> i.name = inventoryItemListDto.name);
+                .ifPresent(item -> item.name = inventoryItemListDto.name);
     }
 }
