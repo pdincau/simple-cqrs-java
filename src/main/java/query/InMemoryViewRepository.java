@@ -4,6 +4,7 @@ import query.dto.InventoryItemDetailsDto;
 import query.dto.InventoryItemListDto;
 
 import java.util.*;
+import java.util.function.Predicate;
 
 public class InMemoryViewRepository {
 
@@ -32,8 +33,16 @@ public class InMemoryViewRepository {
         list.add(inventoryItemListDto);
     }
 
+    public void removeListElement(UUID id) {
+        list.removeIf(element -> (element.id).equals(id));
+    }
+
     public InventoryItemDetailsDto details(UUID id) {
         return details.get(id);
     }
 
+    public void updateListElement(InventoryItemListDto inventoryItemListDto) {
+        list.removeIf(element -> (element.id).equals(inventoryItemListDto.id));
+        list.add(inventoryItemListDto);
+    }
 }

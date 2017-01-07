@@ -17,19 +17,19 @@ public class InventoryItemListListener {
 
     @Subscribe
     public void consume(InventoryItemCreated event) {
-        System.out.println(this.getClass().getCanonicalName() + " item created handled");
         InventoryItemListDto inventoryItemListDto = new InventoryItemListDto(event.id, event.name);
         repository.saveListElement(inventoryItemListDto);
     }
 
     @Subscribe
     public void consume(InventoryItemDeactivated event) {
-        System.out.println(this.getClass().getCanonicalName() + " item deactivated handled");
+        repository.removeListElement(event.id);
     }
 
     @Subscribe
     public void consume(InventoryItemRenamed event) {
-        System.out.println(this.getClass().getCanonicalName() + " item renamed handled");
+        InventoryItemListDto inventoryItemListDto = new InventoryItemListDto(event.id, event.newName);
+        repository.updateListElement(inventoryItemListDto);
     }
 
 
